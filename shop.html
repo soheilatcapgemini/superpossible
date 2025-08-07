@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Retailer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f2f2f2;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .product {
+      background: white;
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      width: 200px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .product:hover {
+      transform: scale(1.03);
+    }
+    .product img {
+      width: 100%;
+      border-radius: 5px;
+    }
+    .details {
+      display: none;
+      background: white;
+      padding: 2rem;
+      margin: 2rem auto;
+      max-width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    .details img {
+      width: 100%;
+      border-radius: 5px;
+    }
+    .close-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Simple Retailer</h1>
+</header>
+
+<div class="container" id="product-list">
+  <!-- Products will be injected here -->
+</div>
+
+<div class="details" id="product-details">
+  <h2 id="detail-name"></h2>
+  <img id="detail-image" src="" alt="">
+  <p id="detail-description"></p>
+  <p><strong>Price:</strong> $<span id="detail-price"></span></p>
+  <button class="close-btn" onclick="closeDetails()">Close</button>
+</div>
+
+<script>
+  const products = [
+    {
+      name: "Wireless Headphones",
+      price: 59.99,
+      description: "High-quality wireless headphones with noise cancellation.",
+      image: "https://via.placeholder.com/200x150?text=Headphones"
+    },
+    {
+      name: "Smart Watch",
+      price: 129.99,
+      description: "Track your activity, health, and stay connected.",
+      image: "https://via.placeholder.com/200x150?text=Smart+Watch"
+    },
+    {
+      name: "Bluetooth Speaker",
+      price: 39.99,
+      description: "Portable speaker with deep bass and clear sound.",
+      image: "https://via.placeholder.com/200x150?text=Speaker"
+    },
+    {
+      name: "Gaming Mouse",
+      price: 25.99,
+      description: "Ergonomic mouse with customizable RGB lighting.",
+      image: "https://via.placeholder.com/200x150?text=Gaming+Mouse"
+    }
+  ];
+
+  const productList = document.getElementById('product-list');
+  const detailBox = document.getElementById('product-details');
+
+  function showDetails(product) {
+    document.getElementById('detail-name').innerText = product.name;
+    document.getElementById('detail-price').innerText = product.price.toFixed(2);
+    document.getElementById('detail-description').innerText = product.description;
+    document.getElementById('detail-image').src = product.image;
+    detailBox.style.display = 'block';
+    window.scrollTo({ top: detailBox.offsetTop, behavior: 'smooth' });
+  }
+
+  function closeDetails() {
+    detailBox.style.display = 'none';
+  }
+
+  // Populate product list
+  products.forEach(product => {
+    const div = document.createElement('div');
+    div.className = 'product';
+    div.innerHTML = `
+      <img src="${product.image}" alt="${product.name}">
+      <h3>${product.name}</h3>
+      <p>$${product.price.toFixed(2)}</p>
+    `;
+    div.onclick = () => showDetails(product);
+    productList.appendChild(div);
+  });
+</script>
+
+</body>
+</html>
