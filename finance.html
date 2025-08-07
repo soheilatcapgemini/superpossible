@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Finance Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --card-bg: #ffffff;
+      --primary: #1d3557;
+      --accent: #457b9d;
+      --text: #333;
+      --gray: #888;
+      --radius: 10px;
+      --shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .dashboard {
+      padding: 2rem;
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+    }
+
+    .metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.5rem;
+    }
+
+    .metric span:first-child {
+      color: var(--gray);
+    }
+
+    @media (max-width: 600px) {
+      canvas {
+        height: 250px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>FinancePro Dashboard</h1>
+</header>
+
+<div class="dashboard">
+
+  <div class="card">
+    <h2>Revenue Trend</h2>
+    <canvas id="revenueChart"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Expense Breakdown</h2>
+    <canvas id="expenseChart"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Portfolio Allocation</h2>
+    <canvas id="portfolioChart"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Quick Metrics</h2>
+    <div class="metrics">
+      <div class="metric"><span>Total Revenue:</span><span>$1.2M</span></div>
+      <div class="metric"><span>Operating Cost:</span><span>$350K</span></div>
+      <div class="metric"><span>Net Profit:</span><span>$850K</span></div>
+      <div class="metric"><span>Investments:</span><span>$2.4M</span></div>
+      <div class="metric"><span>Clients:</span><span>186</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Revenue Line Chart
+  new Chart(document.getElementById('revenueChart'), {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      datasets: [{
+        label: 'Revenue ($)',
+        data: [120000, 135000, 128000, 140000, 155000, 165000, 178000],
+        borderColor: '#1d3557',
+        backgroundColor: 'rgba(29, 53, 87, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          ticks: {
+            callback: val => '$' + (val / 1000) + 'k'
+          }
+        }
+      }
+    }
+  });
+
+  // Expense Bar Chart
+  new Chart(document.getElementById('expenseChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Salaries', 'Marketing', 'Operations', 'R&D', 'Others'],
+      datasets: [{
+        label: 'Expenses ($)',
+        data: [120000, 90000, 45000, 60000, 30000],
+        backgroundColor: ['#457b9d', '#74c69d', '#a8dadc', '#f4a261', '#e76f51']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          ticks: {
+            callback: val => '$' + (val / 1000) + 'k'
+          }
+        }
+      }
+    }
+  });
+
+  // Portfolio Doughnut Chart
+  new Chart(document.getElementById('portfolioChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Stocks', 'Bonds', 'Real Estate', 'Cash'],
+      datasets: [{
+        data: [40, 25, 20, 15],
+        backgroundColor: ['#1d3557', '#a8dadc', '#457b9d', '#e9c46a'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#444'
+          }
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
