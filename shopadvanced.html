@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pro Retailer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --primary: #2a9d8f;
+      --accent: #264653;
+      --bg: #f4f4f4;
+      --white: #fff;
+      --gray: #666;
+      --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--accent);
+    }
+
+    header {
+      background-color: var(--primary);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      color: var(--white);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .search-bar {
+      max-width: 600px;
+      margin: 2rem auto;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .search-bar input {
+      padding: 0.75rem 1rem;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 0 2rem 4rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .product {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+    }
+
+    .product h3 {
+      margin: 0 0 0.5rem;
+    }
+
+    .price {
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal h2 {
+      margin-top: 0;
+    }
+
+    .modal .price {
+      font-size: 1.2rem;
+    }
+
+    .modal button {
+      margin-top: 1rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal button:hover {
+      background: #1f3b3a;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Pro Retailer</h1>
+</header>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search products...">
+</div>
+
+<div class="container" id="productContainer">
+  <!-- Products are injected here -->
+</div>
+
+<!-- Product Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalName"></h2>
+    <p class="price">$<span id="modalPrice"></span></p>
+    <p id="modalDescription"></p>
+    <p><strong>Category:</strong> <span id="modalCategory" class="tag"></span></p>
+    <button onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+  const products = [
+    {
+      name: "Wireless Headphones",
+      price: 59.99,
+      category: "Audio",
+      description: "Premium wireless headphones with adaptive noise cancelling."
+    },
+    {
+      name: "Smart Watch",
+      price: 129.99,
+      category: "Wearables",
+      description: "Monitor your heart rate, steps, and messages in style."
+    },
+    {
+      name: "Bluetooth Speaker",
+      price: 39.99,
+      category: "Audio",
+      description: "Compact speaker with powerful sound and long battery life."
+    },
+    {
+      name: "Gaming Mouse",
+      price: 25.99,
+      category: "Accessories",
+      description: "Precision gaming mouse with programmable buttons and RGB lighting."
+    },
+    {
+      name: "USB-C Hub",
+      price: 19.99,
+      category: "Accessories",
+      description: "Expand your laptop's connectivity with multiple ports."
+    },
+    {
+      name: "Fitness Tracker",
+      price: 45.00,
+      category: "Wearables",
+      description: "Lightweight and durable tracker for your daily activities."
+    }
+  ];
+
+  const productContainer = document.getElementById('productContainer');
+  const searchInput = document.getElementById('searchInput');
+  const modalOverlay = document.getElementById('modalOverlay');
+
+  function renderProducts(list) {
+    productContainer.innerHTML = '';
+    list.forEach(product => {
+      const div = document.createElement('div');
+      div.className = 'product';
+      div.innerHTML = `
+        <h3>${product.name}</h3>
+        <div class="price">$${product.price.toFixed(2)}</div>
+        <div class="tag">${product.category}</div>
+      `;
+      div.onclick = () => showProduct(product);
+      productContainer.appendChild(div);
+    });
+  }
+
+  function showProduct(product) {
+    document.getElementById('modalName').innerText = product.name;
+    document.getElementById('modalPrice').innerText = product.price.toFixed(2);
+    document.getElementById('modalDescription').innerText = product.description;
+    document.getElementById('modalCategory').innerText = product.category;
+    modalOverlay.style.display = 'flex';
+  }
+
+  function closeModal() {
+    modalOverlay.style.display = 'none';
+  }
+
+  searchInput.addEventListener('input', () => {
+    const keyword = searchInput.value.toLowerCase();
+    const filtered = products.filter(p => p.name.toLowerCase().includes(keyword));
+    renderProducts(filtered);
+  });
+
+  renderProducts(products);
+</script>
+
+</body>
+</html>
